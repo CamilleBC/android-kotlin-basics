@@ -1,7 +1,8 @@
-package me.camillebc.basics
+package me.camillebc.basics.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import me.camillebc.basics.R
 
 class MainActivity : AppCompatActivity() {
 
