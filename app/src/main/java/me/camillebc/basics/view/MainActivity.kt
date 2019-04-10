@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import me.camillebc.basics.R
+import me.camillebc.basics.view.fragment.DogEditorFragment
 import me.camillebc.basics.view.fragment.DogListFragment
 
 /**
@@ -11,6 +12,7 @@ import me.camillebc.basics.view.fragment.DogListFragment
  */
 class MainActivity :
     AppCompatActivity(),
+    DogEditorFragment.OnAddClickListener,
     DogListFragment.OnAddClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,10 +26,22 @@ class MainActivity :
     }
 
     /**
+     * This is the implementation of the [DogEditorFragment.OnAddClickListener].
+     */
+    override fun onDogEditorAddClick() {
+        toast("Not implemented")
+        supportFragmentManager.popBackStack()
+    }
+
+    /**
      * This is the implementation of the [DogListFragment.OnAddClickListener].
      */
     override fun onDogListAddClick() {
-        toast("Button clicked")
+        val dogEditorFragment = DogEditorFragment()
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.constraintLayout_main_fragmentContainer, dogEditorFragment)
+            .addToBackStack(null)
+            .commit()
     }
 
 }
