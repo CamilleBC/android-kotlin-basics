@@ -3,14 +3,16 @@ package me.camillebc.basics.view.fragment
 
 import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_dog_list.*
-
 import me.camillebc.basics.R
-import java.lang.RuntimeException
+import me.camillebc.basics.view.Dog
+
+private const val ARG_DOG_LIST = "dog_list"
 
 /**
  * A simple [Fragment] subclass.
@@ -18,6 +20,15 @@ import java.lang.RuntimeException
  */
 class DogListFragment : Fragment() {
     private var onAddClickListener: OnAddClickListener? = null
+    private var dogList = listOf<Dog>()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        arguments?.apply {
+           dogList = getParcelableArrayList(ARG_DOG_LIST) ?: listOf()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,6 +49,9 @@ class DogListFragment : Fragment() {
         activity?.let {
             button_dogList_add.setOnClickListener{ onAddClickListener?.onDogListAddClick() }
         }
+        context?.let {
+            listView_dogList.adapter = ArrayAdapter<Dog>(it, android.R.layout.simple_list_item_1, dogList)
+        }
     }
 
     /**
@@ -55,7 +69,7 @@ class DogListFragment : Fragment() {
         super.onAttach(context)
         // Attach the parent's activity listener to the fragment
         if (context is OnAddClickListener)
-            onAddClickListener = context as OnAddClickListener
+            onAddClickListener = context
         else
             throw RuntimeException("$context must implement OnAddClickListener")
     }
@@ -74,4 +88,20 @@ class DogListFragment : Fragment() {
         fun onDogListAddClick()
     }
 
+    companion object {
+        /**
+         * Use this factory method to create a new instance of
+         * this fragment using the provided parameters.
+         *
+         * @param dogList List of [Dog] to pass as arguments
+         * @return A new instance of fragment BlankFragment.
+         */
+        @JvmStatic
+        fun newInstance(dogList: ArrayList<Dog>) =
+            DogListFragment().apply {
+                arguments = Bundle().apply {
+                    putParcelableArrayList(ARG_DOG_LIST, dogList)
+                }
+            }
+    }
 }

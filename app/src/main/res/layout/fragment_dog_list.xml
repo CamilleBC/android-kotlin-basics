@@ -7,12 +7,13 @@
     android:layout_height="match_parent"
     tools:context=".view.fragment.DogListFragment">
 
-    <TextView
+    <ListView
+        android:id="@+id/listView_dogList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
         android:textSize="@dimen/size_title"
-        android:text="I am DogListFragment" />
+        android:text="Empty list" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/button_dogList_add"
