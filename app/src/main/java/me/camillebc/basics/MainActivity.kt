@@ -1,33 +1,51 @@
 package me.camillebc.basics
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentManager
 import me.camillebc.basics.fragment.DogListFragment
 
 /**
- * Step 1
+ * Step 2
  *
- * 1- We add a container (here a ConstraintLayout but it could be any kind of layout) to the activity_main.xml layout
- * 2- We create an empty fragment named [DogListFragment] and its related fragment_dog_list.xml layout
- * 3- In the [MainActivity.onCreate], we instantiate and inflate our [DogListFragment]
+ * 1- To communicate between the fragment and the activity, we need to add:
+ *  a- A listener interface in the fragment
+ *  b- The implementation of the interface: a callback in the activity
+ *
+ * 2- We need to attach the actual callback to the button's onClickListener:
+ *  a- Attach the reference of the activity that implements the listener to the fragment
+ *  b- Add the activity's callback to the button through [View.setOnClickListener]
  *
  */
-class MainActivity : AppCompatActivity() {
+class MainActivity :
+    AppCompatActivity(),
+    // The parent activity must extend the fragment's listener
+    DogListFragment.OnAddClickListener {
 
-    /**
-     * 1- We instantiate a [DogListFragment]
-     * 2- We call the [FragmentManager] to begin a transaction
-     * 3- We add the [DogListFragment] instance and the container's id to the transaction
-     * 4- We commit the transaction to execute it
-     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val dogListFragment = DogListFragment()                                     //1
-        supportFragmentManager.beginTransaction()                                   //2
-            .add(R.id.constraintLayout_main_fragmentContainer, dogListFragment)     //3
-            .commit()                                                               //4
+        val dogListFragment = DogListFragment()
+        supportFragmentManager.beginTransaction()
+            .add(R.id.constraintLayout_main_fragmentContainer, dogListFragment)
+            .commit()
     }
+
+    /**
+     * 1.a - Callback
+     *
+     * This is the implementation of the [DogListFragment.OnAddClickListener].
+     */
+    override fun onDogListAddClick() {
+        toast("Button clicked")
+    }
+
+}
+
+/**
+ * Small extension function for activities. It simply Toast a message
+ */
+fun AppCompatActivity.toast(message: String) {
+    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 }
