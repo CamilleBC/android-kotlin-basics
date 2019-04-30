@@ -1,3 +1,13 @@
 <resources>
+    <!-- App -->
     <string name="app_name">Basics</string>
+    <!-- Dog list -->
+    <string name="empty_db">No elements in database</string>
+    <!-- Dog editor -->
+    <string name="editor_add">Add</string>
+    <string name="editor_breed">Breed</string>
+    <string name="editor_cancel">Cancel</string>
+    <string name="editor_name">Name</string>
+    <string name="editor_sub_breed">Sub-breed</string>
+    <string name="editor_title">Customize your dog!</string>
 </resources>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragment.DogEditorFragment">
+
+    <TextView
+        android:id="@+id/textView_dogEditor_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/huge_margin"
+        android:text="@string/editor_title"
+        android:textAlignment="center"
+        android:textSize="@dimen/size_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/editText_dogEditor_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/large_margin"
+        android:ems="10"
+        android:hint="@string/editor_name"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toTopOf="@+id/textView_dogEditor_breed"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView_dogEditor_title"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <TextView
+        android:id="@+id/textView_dogEditor_breed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/tiny_margin"
+        android:layout_marginTop="@dimen/large_margin"
+        android:layout_marginBottom="@dimen/small_margin"
+        android:text="@string/editor_breed"
+        app:layout_constraintBottom_toTopOf="@+id/textView_dogEditor_subBreed"
+        app:layout_constraintStart_toStartOf="@+id/editText_dogEditor_name"
+        app:layout_constraintTop_toBottomOf="@+id/editText_dogEditor_name"
+        app:layout_constraintVertical_bias="0.5"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <EditText
+        android:id="@+id/editText_dogEditor_breed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="6"
+        app:layout_constraintBottom_toBottomOf="@+id/textView_dogEditor_breed"
+        app:layout_constraintEnd_toEndOf="@+id/editText_dogEditor_name"
+        app:layout_constraintTop_toTopOf="@+id/textView_dogEditor_breed" />
+
+    <TextView
+        android:id="@+id/textView_dogEditor_subBreed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/large_margin"
+        android:text="@string/editor_sub_breed"
+        app:layout_constraintBottom_toTopOf="@+id/button_dogEditor_add"
+        app:layout_constraintStart_toStartOf="@+id/textView_dogEditor_breed"
+        app:layout_constraintTop_toBottomOf="@+id/textView_dogEditor_breed"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <EditText
+        android:id="@+id/editText_dogEditor_subBreed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="6"
+        app:layout_constraintBottom_toBottomOf="@+id/textView_dogEditor_subBreed"
+        app:layout_constraintEnd_toEndOf="@+id/editText_dogEditor_breed"
+        app:layout_constraintTop_toTopOf="@+id/textView_dogEditor_subBreed" />
+
+    <Button
+        android:id="@+id/button_dogEditor_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/large_margin"
+        android:text="@string/editor_add"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView_dogEditor_subBreed" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
