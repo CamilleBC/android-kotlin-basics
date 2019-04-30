@@ -2,25 +2,32 @@ package me.camillebc.basics
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import me.camillebc.basics.R
+import androidx.fragment.app.FragmentManager
+import me.camillebc.basics.fragment.DogListFragment
 
 /**
- * Step 0
+ * Step 1
  *
- * We simply have a [MainActivity] class that extends [AppCompatActivity] (I'm using this for compatibility reasons on
- * older phones, use whatever you need for your project).
+ * 1- We add a container (here a ConstraintLayout but it could be any kind of layout) to the activity_main.xml layout
+ * 2- We create an empty fragment named [DogListFragment] and its related fragment_dog_list.xml layout
+ * 3- In the [MainActivity.onCreate], we instantiate and inflate our [DogListFragment]
  *
  */
 class MainActivity : AppCompatActivity() {
 
     /**
-     * This is the starting step for our application.
-     * We simply have a `MainActivity` class that extends `AppCompatActivity` (I'm using this for compatibility reasons on older phones, use whatever you need for your project).
-     * The activity inflates its XML layout in the [`MainActivity.onCreate`](https://developer.android.com/guide/components/activities/activity-lifecycle#oncreate)
-     * function, which will then display the views on screen.
+     * 1- We instantiate a [DogListFragment]
+     * 2- We call the [FragmentManager] to begin a transaction
+     * 3- We add the [DogListFragment] instance and the container's id to the transaction
+     * 4- We commit the transaction to execute it
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val dogListFragment = DogListFragment()                                     //1
+        supportFragmentManager.beginTransaction()                                   //2
+            .add(R.id.constraintLayout_main_fragmentContainer, dogListFragment)     //3
+            .commit()                                                               //4
     }
 }
