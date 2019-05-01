@@ -10,4 +10,6 @@
     <string name="editor_name">Name</string>
     <string name="editor_sub_breed">Sub-breed</string>
     <string name="editor_title">Customize your dog!</string>
+    <!-- Dog editor -->
+    <string name="list_empty">No dogs! :(</string>
 </resources>
