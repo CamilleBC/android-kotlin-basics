@@ -2,13 +2,11 @@
 # Site settings
 #
 remote_theme: CamilleBC/pretty-docs
-url: https://camillebc.github.io/android-basics-kotlin
+url: https://android.camillebc.me
 base_url: ""
 title: &site_title Android Basics
 description: &site_description Tutorials to learn Android with Kotlin!
 branding:
-  icon:
-    name: icon_documents_alt
   highlight: Android
   bold: Tutorial
 markdown: kramdown
