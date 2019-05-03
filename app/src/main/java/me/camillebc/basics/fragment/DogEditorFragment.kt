@@ -6,14 +6,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
 import kotlinx.android.synthetic.main.fragment_dog_editor.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import me.camillebc.basics.Dog
+import me.camillebc.basics.DogViewModel
 import me.camillebc.basics.R
 
 /**
  * A simple [Fragment] subclass. See [DogListFragment] to understand the implementation
  */
 class DogEditorFragment : Fragment() {
+    private lateinit var dogViewModel: DogViewModel
     private var onAddClickListener: OnAddClickListener? = null
 
     override fun onCreateView(
@@ -25,8 +33,6 @@ class DogEditorFragment : Fragment() {
     }
 
     /**
-     * 4- On button click, call the callback function from the parent activity, using the user input to create the dog
-     *
      * [onActivityCreated] is called after [onCreateView]. The button's view is already inflated.
      * [onActivityCreated] is called after the parent's activity is fully functional.
      *
@@ -36,11 +42,12 @@ class DogEditorFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         // Attach the callback to the onClickListener
         activity?.let {
-            button_dogEditor_add.setOnClickListener { onAddClickListener?.onDogEditorAddClick(
-                editText_dogEditor_name.text.toString(),
-                editText_dogEditor_breed.text.toString(),
-                editText_dogEditor_subBreed.text.toString()
-            ) } }
+            dogViewModel = ViewModelProviders.of(this.activity!!).get(DogViewModel::class.java)
+            button_dogEditor_add.setOnClickListener {
+                localClickListener()
+            }
+        }
+
     }
 
     /**
@@ -72,11 +79,42 @@ class DogEditorFragment : Fragment() {
     }
 
     /**
-     * interface for the button click listener. The callback needs to be implemented in the parent's activity
+     * 3- All our data manipulation code is here:
+     *      a- We get our Dog item from the user input in a try/catch block
+     *      b- We launch an asynchronous coroutine to update the data
+     *      c- We call the activity callback to pop the last entry in the BackStack
      */
-    interface OnAddClickListener {
-        fun onDogEditorAddClick(name: String, breed: String, subBreed: String)
+    private fun localClickListener() {
+        // We are doing our validation in the data class constructor and catching the exception here
+        try {
+            val dog = getDogFromUserInput()
+            // We are using a Kotlin coroutine. The goal is not really to learn how to use them. Just know that the
+            // function will be run asynchronously, and because the LiveData is observed, it will be updated as soon
+            // as the coroutine finishes executing.
+            GlobalScope.launch {
+                delay(2000)
+                dogViewModel.addDog(dog)
+            }
+            // Call the activity callback to pop the BackStack
+            onAddClickListener?.onDogEditorAddClick()
+        } catch (e: IllegalArgumentException) {
+            activity?.let {
+                Toast.makeText(it, e.message, Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
+    /**
+     * This function calls the [Dog.newInstance] function with the user input.
+     * Our custom constructor will throw an exception if the data is invalid.
+     */
+    private fun getDogFromUserInput(): Dog = Dog.newInstance(
+            editText_dogEditor_name.text.toString(),
+            editText_dogEditor_breed.text.toString(),
+            editText_dogEditor_subBreed.text.toString()
+        )
 
+    interface OnAddClickListener {
+        fun onDogEditorAddClick()
+    }
 }

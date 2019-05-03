@@ -8,17 +8,20 @@ import me.camillebc.basics.fragment.DogEditorFragment
 import me.camillebc.basics.fragment.DogListFragment
 
 /**
- * 0.2.1 - ViewModel
+ * 0.2.2 - LiveData
  *
- * An important concept to understand is that of lifecycle. In Android, components transition between different states
- * depending on various things: the activity could be in the foreground, background, in memory, killed by the OS, etc.
- * The data owned by a component cannot be relied upon in another component, as we don't know its state.
- * This is where ViewModel comes in.
  *
- * 1- We declare a class by extending the ViewModel class.
- * 2- We instantiate our class and tie it to a lifecycle owner.
- * 3- We instantiate the ViewModel in the components where we need it, specifying its owner: this way, if the ViewModel
- *    has already been instantiated for this owner, we get the existing instance instead of anew one.
+ * Right now the activity manages the Dog data on [DogEditorFragment.OnAddClickListener]
+ * We would like each activity fragment to be as decoupled as we can.
+ *
+ * The [MainActivity] role should be only to manage the fragments: launching and popping them.
+ * The [DogListFragment] should only be in charge of displaying  list of data.
+ * The [DogEditorFragment] should only take the user input and
+ *
+ * 1- We change our dogList type to [LiveData] and [MutableLiveData]
+ * 2- We remove all the data related code in the [MainActivity] and only pop the BackStack in the [MainActivity]
+ * 3- We set up all the data related code in a local listener in [DogEditorFragment]
+ * 4- We register an [Observer] to the [LiveData]in the [DogListFragment]. It will update the adapter on change.
  *
  * @property dogViewModel ViewModel instance, owned by the [MainActivity]
  */
@@ -42,27 +45,6 @@ class MainActivity :
     }
 
     /**
-     * This is the implementation of the [DogEditorFragment.OnAddClickListener].
-     */
-    override fun onDogEditorAddClick(name: String, breed: String, subBreed: String) {
-        // create a Dog item from the user input
-        val dog = Dog(name, breed, subBreed)
-        // if the data is valid, add the item to the list
-        if ( dog.isValid() ) {
-            dogViewModel.addDog(dog)
-            // create a new instance of the DogListFragment with the new data
-            val dogListFragment = DogListFragment()
-            // replace the DogEditorFragment with DogListFragment ith the new data
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.constraintLayout_main_fragmentContainer, dogListFragment)
-                .addToBackStack(null)
-                .commit()
-        } else {
-            toast("Invalid dog.\nName and breed cannot be empty.")
-        }
-    }
-
-    /**
      * This is the implementation of the [DogListFragment.OnAddClickListener].
      */
     override fun onDogListAddClick() {
@@ -72,12 +54,15 @@ class MainActivity :
             .addToBackStack(null)
             .commit()
     }
+
+    /**
+     * 2- We just removed all data related operation and pop the last entry in the BackStack to go back to the
+     *    [DogListFragment].
+     *
+     * This is the implementation of the [DogEditorFragment.OnAddClickListener].
+     */
+    override fun onDogEditorAddClick() {
+        supportFragmentManager.popBackStack()
+    }
 }
 
-/**
- * Small extension function for activities. It simply Toast a message
- */
-fun AppCompatActivity.toast(message: String, long: Boolean = false) {
-    val length = if (long) Toast.LENGTH_LONG else Toast.LENGTH_SHORT
-    Toast.makeText(this, message, length).show()
-}

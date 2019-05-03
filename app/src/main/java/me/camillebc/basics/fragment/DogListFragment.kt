@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import kotlinx.android.synthetic.main.fragment_dog_list.*
 import me.camillebc.basics.Dog
@@ -29,8 +30,11 @@ class DogListFragment : Fragment() {
     }
 
     /**
-     * 3- We call the [ViewModelProviders] using the parent activity as the lifecycle owner.
-     *    This way, if an instance exists, we get that instance instead of creating a new one.
+     * 4- We set an [Observer] on the [LiveData]. When the underlying data is changed, and the [Observer] is registered
+     *    and notified, the adapter will be changed.
+     *
+     * We could use a custom adapter and add a setData function to avoid recreating the whole adapter, but that is not
+     * the point here.
      *
      * [onActivityCreated] is called after [onCreateView]. The button's view is already inflated.
      * [onActivityCreated] is called after the parent's activity is fully functional.
@@ -40,13 +44,16 @@ class DogListFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         activity?.let {
-            // 3-  We instantiate the ViewModel using the parent activity as the lifecycle owner
             dogViewModel = ViewModelProviders.of(this.activity!!).get(DogViewModel::class.java)
             button_dogList_add.setOnClickListener{ onAddClickListener?.onDogListAddClick() }
         }
-        context?.let {
-            // We set the data using the dogList from our ViewModel
-            listView_dogList.adapter = ArrayAdapter<Dog>(it, android.R.layout.simple_list_item_1, dogViewModel.dogList)
+        context?.let { context ->
+            val adapter = ArrayAdapter<Dog>(context, android.R.layout.simple_list_item_1, dogViewModel.dogList.value!!)
+            listView_dogList.adapter = adapter
+            // Comment these lines if you want to see the effect of registering the observer or not
+            dogViewModel.dogList.observe(this@DogListFragment, Observer {
+                adapter.notifyDataSetChanged()
+            })
         }
     }
 
