@@ -7,32 +7,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.ListView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
 import kotlinx.android.synthetic.main.fragment_dog_list.*
-import me.camillebc.basics.R
 import me.camillebc.basics.Dog
-
-private const val ARG_DOG_LIST = "dog_list"
+import me.camillebc.basics.DogViewModel
+import me.camillebc.basics.R
 
 /**
  * A simple [Fragment] subclass.
  */
 class DogListFragment : Fragment() {
     private var onAddClickListener: OnAddClickListener? = null
-    private var dogList = listOf<Dog>()
-
-    /**
-     * 6.d- Get the data from the [Bundle]
-     */
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        arguments?.apply {
-            // if the [getParcelableArrayList] returns null, we set the dogList as an empty list
-            dogList = getParcelableArrayList(ARG_DOG_LIST) ?: listOf()
-        }
-    }
+    private lateinit var dogViewModel: DogViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,9 +29,8 @@ class DogListFragment : Fragment() {
     }
 
     /**
-     * 6.e- We use the [ListView.setAdapter] to set the adapter. An adapter is just an object that formats the data for
-     *      a view, using a specific layout (here, a standard simple_list_item layout). It links the raw data to the
-     *      item in the view.
+     * 3- We call the [ViewModelProviders] using the parent activity as the lifecycle owner.
+     *    This way, if an instance exists, we get that instance instead of creating a new one.
      *
      * [onActivityCreated] is called after [onCreateView]. The button's view is already inflated.
      * [onActivityCreated] is called after the parent's activity is fully functional.
@@ -54,10 +40,13 @@ class DogListFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         activity?.let {
+            // 3-  We instantiate the ViewModel using the parent activity as the lifecycle owner
+            dogViewModel = ViewModelProviders.of(this.activity!!).get(DogViewModel::class.java)
             button_dogList_add.setOnClickListener{ onAddClickListener?.onDogListAddClick() }
         }
         context?.let {
-            listView_dogList.adapter = ArrayAdapter<Dog>(it, android.R.layout.simple_list_item_1, dogList)
+            // We set the data using the dogList from our ViewModel
+            listView_dogList.adapter = ArrayAdapter<Dog>(it, android.R.layout.simple_list_item_1, dogViewModel.dogList)
         }
     }
 
@@ -94,28 +83,5 @@ class DogListFragment : Fragment() {
      */
     interface OnAddClickListener {
         fun onDogListAddClick()
-    }
-
-    /**
-     * 6.b- Companion object to the [DogListFragment]. This object is a singleton completely independent from the
-     * [DogListFragment], except for the fact that it can easily be accessed through it. It's only syntactical sugar.
-     */
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param dogList List of [Dog] to pass as arguments
-         * @return A new instance of fragment BlankFragment.
-         */
-        @JvmStatic
-        fun newInstance(dogList: ArrayList<Dog>) =
-            DogListFragment().apply {
-                // we add the dogList to the fragments arguments, bundling the dogList easily,
-                // as the data class is @Parcelizable
-                arguments = Bundle().apply {
-                    putParcelableArrayList(ARG_DOG_LIST, dogList)
-                }
-            }
     }
 }

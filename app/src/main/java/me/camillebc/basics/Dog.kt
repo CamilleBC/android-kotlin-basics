@@ -1,6 +1,5 @@
 package me.camillebc.basics
 
-import android.annotation.SuppressLint
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
