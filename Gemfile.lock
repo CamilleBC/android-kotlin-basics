@@ -1,3 +1,13 @@
+GIT
+  remote: git://github.com/m1racoli/jekyll-pdf
+  revision: b91acc7ecad81d4c8977f58e2dd2fde1ebbcd8c9
+  branch: fix-digest-gem
+  specs:
+    jekyll-pdf (0.1.7)
+      jekyll (~> 3.1, >= 2.0)
+      pdfkit (~> 0.8)
+      wkhtmltopdf-installer (~> 0.12)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -211,6 +221,7 @@ GEM
       sawyer (~> 0.8.0, >= 0.5.3)
     pathutil (0.16.2)
       forwardable-extended (~> 2.6)
+    pdfkit (0.8.4.1)
     public_suffix (2.0.5)
     rb-fsevent (0.10.3)
     rb-inotify (0.10.0)
@@ -237,12 +248,14 @@ GEM
     tzinfo (1.2.5)
       thread_safe (~> 0.1)
     unicode-display_width (1.4.1)
+    wkhtmltopdf-installer (0.12.5.3)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   github-pages
+  jekyll-pdf!
 
 RUBY VERSION
    ruby 2.6.3p62

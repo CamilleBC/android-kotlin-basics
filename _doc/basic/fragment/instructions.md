@@ -7,10 +7,15 @@ sections:
   - "0.1.2"
   - "0.1.3"
   - "0.1.4"
+pdf: true
 ---
 
 You will implements two fragments: one called *DogListFragment*, the other *DogEditorFragment*.
 You will need to have two screens, one to display the list of *Dog* items, the other to edit or add a *Dog* item.
+
+Download the [pdf]({{ page.pdf_url }})
+
+{{ page.pdf_url }}
 
 {::options auto_ids="false" /}
 

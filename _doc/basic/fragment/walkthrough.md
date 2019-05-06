@@ -7,6 +7,7 @@ sections:
  - "0.1.2 Walkthrough"
  - "0.1.3 Walkthrough"
  - "0.1.4 Walkthrough"
+pdf: true
 ---
 
 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#btn-walkthrough" aria-expanded="false" aria-controls="btn-walkthrough">
@@ -88,7 +89,7 @@ supportFragmentManager.beginTransaction()         		// 2
 		```  
 	
  3. We need to attach the actual callback to the button's [onClickListener](https://developer.android.com/reference/android/view/View.OnClickListener). 
-	1. At this stage, all that we do is attach, in the _DogListFragment_, a reference to the activity that implements the listener. We attach the reference in [Fragment.onAttach](https://developer.android.com/reference/android/support/v4/app/Fragment.html#onattach_1) where we check if the context implements the listener. We cannot yet attach the actual callback, as the parent activity can be referenced, but it may not yet be fully functional. Our callback here relies on the `Toast` function, which requires the activity to be fully functional.
+	1. At this stage, all that we do is attach, in the _DogListFragment_, a reference to the activity that implements the listener. We attach the reference in [_Fragment.onAttach_](https://developer.android.com/reference/android/support/v4/app/Fragment.html#onattach_1) where we check if the context implements the listener. We cannot yet attach the actual callback, as the parent activity can be referenced, but it may not yet be fully functional. Our callback here relies on the `Toast` function, which requires the activity to be fully functional.
 		```kotlin
 		override fun onAttach(context: Context) {  
 		    super.onAttach(context)  
@@ -99,7 +100,7 @@ supportFragmentManager.beginTransaction()         		// 2
 		 throw RuntimeException("$context must implement OnAddClickListener")  
 		}
 		```
-	3. In the second stage, we add the actual activity's callback's implementation to the button through the [`View.OnClickListener`](https://developer.android.com/reference/android/view/View.OnClickListener) method. This method will call the implemented callback on a user's click on the _View_ element. We add the callback in [Fragment.onActivityCreated](https://developer.android.com/reference/android/support/v4/app/Fragment.html#onactivitycreated), where the parent activity is sure to have been created. We use the reference to the parent's listener implementation, and set our  [`View.OnClickListener`](https://developer.android.com/reference/android/view/View.OnClickListener) method to call the callback method:
+	2. In the second stage, we add the actual activity's callback's implementation to the button through the [_View.OnClickListener_](https://developer.android.com/reference/android/view/View.OnClickListener) method. This method will call the implemented callback on a user's click on the _View_ element. We add the callback in [_Fragment.onActivityCreated_](https://developer.android.com/reference/android/support/v4/app/Fragment.html#onactivitycreated), where the parent activity is sure to have been created. We use the reference to the parent's listener implementation, and set our  [_View.OnClickListener_](https://developer.android.com/reference/android/view/View.OnClickListener) method to call the callback method:
 		```kotlin
 		override fun onActivityCreated(savedInstanceState: Bundle?) {  
 		    super.onActivityCreated(savedInstanceState)  
@@ -112,11 +113,59 @@ supportFragmentManager.beginTransaction()         		// 2
 {: id="0.1.3-walkthrough"}
 [**Clone on Github**](https://github.com/CamilleBC/android-kotlin-basics/tree/6f7cbf3039c3a0a180f9bce948f4b9ba03f02cb2)
 
-[Fragment.onCreateView](https://developer.android.com/reference/android/support/v4/app/Fragment.html#oncreateview).
+Now the next will just require us to create a new fragment, setup a listener, and switch between the fragments using callbacks.
+
+1. We just redo everything we did in the last step:
+   1. Add a _DogEditorFragment_ with its fragment_dog_editor.xml layout
+   2. Add a listener interface in the fragment, and the callback's implementation in the parent activity.
+   In _DogListFragment_:
+	```kotlin
+	interface OnAddClickListener {
+		fun onDogEditorAddClick()
+	}
+	```
+	In _MainActivity_:
+	```kotlin
+	override fun onDogEditorAddClick() {
+		toast("Not implemented")
+		supportFragmentManager.popBackStack()
+	}
+	```
+   3. Attach the listener's reference and the callback to the button's [_View.OnClickListener_](https://developer.android.com/reference/android/view/View.OnClickListener). In _DogEditorFragment_:
+	```kotlin
+	override fun onActivityCreated(savedInstanceState: Bundle?) {
+		super.onActivityCreated(savedInstanceState)
+		// Attach the callback to the onClickListener
+		activity?.let {
+			button_dogEditor_add.setOnClickListener { onAddClickListener?.onDogEditorAddClick() }
+		}
+	}
+	override fun onAttach(context: Context) {
+		super.onAttach(context)
+		// Attach a reference to the listener's implement in the parent's activity
+		if (context is OnAddClickListener)
+			onAddClickListener = context
+		else
+			throw RuntimeException("$context must implement OnAddClickListener")
+	}
+	```
+2. This time we also add a new transaction to the [_FragmentManager_](https://developer.android.com/reference/android/app/FragmentManager.html) in _MainActivity.onDogListAddClick_. We need to replace the _DogListFragment_ by the _DogEditorFragment_
+   1. When we click the _DogEditorFragment_'s button, we replace, instead of adding, the _DogListFragment_ in the activity_main.xml container.
+   2. We add this transaction to the BackStack.
+	```kotlin
+	override fun onDogListAddClick() {
+		val dogEditorFragment = DogEditorFragment()
+		supportFragmentManager.beginTransaction()
+			.replace(R.id.constraintLayout_main_fragmentContainer, dogEditorFragment)		// 1
+			.addToBackStack(null)								// 2
+			.commit()
+	}
+	```
+
+Now, when we click on the _DogListEditor_'s floating button, we launch the _DogEditorFragment_. And when we click on the _DogEditorFragment_'s button, we pop the last transaction and go back to the _DogListFragment_. 
 
 ### 0.1.4 Send the data to fragments
 {: id="0.1.4-walkthrough"}
-
 [**Clone on Github**](https://github.com/CamilleBC/android-kotlin-basics/tree/9ef782c9dca98ef6fcf3fc5d143b6bea1fd49718)
 
 </div>
